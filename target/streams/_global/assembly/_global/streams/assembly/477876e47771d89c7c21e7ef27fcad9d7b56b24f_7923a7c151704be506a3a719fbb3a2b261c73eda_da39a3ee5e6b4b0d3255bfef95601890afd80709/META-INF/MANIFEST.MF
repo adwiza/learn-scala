@@ -1,0 +1,40 @@
+Manifest-Version: 1.0
+Bnd-LastModified: 1598062561940
+Bundle-Description: ScalaTest+ScalaCheck is an open-source integration
+  library between ScalaTest and ScalaCheck for Scala projects.
+Bundle-DocURL: http://www.scalacheck.org/
+Bundle-License: http://www.apache.org/licenses/LICENSE-2.0;description
+ =Apache-2.0
+Bundle-ManifestVersion: 2
+Bundle-Name: ScalaTestPlusScalaCheck
+Bundle-SymbolicName: org.scalatestplus.scalacheck.1.14
+Bundle-Vendor: Artima, Inc.
+Bundle-Version: 3.2.2.0
+Created-By: 1.8.0_261 (Oracle Corporation)
+Export-Package: org.scalatestplus.scalacheck;uses:="org.scalacheck,org
+ .scalacheck.util,org.scalactic,org.scalactic.source,org.scalatest.com
+ patible,org.scalatest.enablers,org.scalatest.exceptions,org.scalatest
+ .prop,scala,scala.collection.immutable,scala.reflect,scala.runtime";v
+ ersion="3.2.2"
+Implementation-Title: scalacheck-1.14
+Implementation-URL: https://github.com/scalatest/scalatestplus-scalach
+ eck
+Implementation-Vendor: org.scalatestplus
+Implementation-Vendor-Id: org.scalatestplus
+Implementation-Version: 3.2.2.0
+Import-Package: org.scalatest;version="[3.2,4)",org.scalatest.compatib
+ le;version="[3.2,4)",org.scalatest.enablers;version="[3.2,4)",org.sca
+ latest.exceptions;version="[3.2,4)",org.scalatest.prop;version="[3.2,
+ 4)",org.scalactic;version="[3.2,4)",org.scalactic.anyvals;version="[3
+ .2,4)",org.scalactic.source;version="[3.2,4)",scala;version="[2.13,2.
+ 14)",scala.collection;version="[2.13,2.14)",scala.collection.immutabl
+ e;version="[2.13,2.14)",scala.reflect;version="[2.13,2.14)",scala.run
+ time;version="[2.13,2.14)",scala.runtime.java8;version="[2.13,2.14)",
+ org.scalacheck;resolution:=optional,org.scalacheck.util;resolution:=o
+ ptional
+Private-Package: org.scalatestplus.scalacheck.1.14.*
+Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
+Specification-Title: scalacheck-1.14
+Specification-Vendor: org.scalatestplus
+Specification-Version: 3.2.2.0
+Tool: Bnd-4.0.0.201805111645
