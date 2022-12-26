@@ -1,6 +1,7 @@
 package module1
+
 object functions {
-  def sum (x: Int, y: Int): Int = {
+  def sum(x: Int, y: Int): Int = {
     x + y
   }
 
@@ -9,9 +10,9 @@ object functions {
   sum(1, 2)
   sum2(1, 2)
 
-//  val list = List(sum2, sum2)
+  //  val list = List(sum2, sum2)
 
-//  list(0)(1, 2) // 3
+  //  list(0)(1, 2) // 3
   val list: List[(Int, Int) => Int] = List(sum _, sum _)
 
   def bar(f: (Int, Int) => Int): Int = ???
