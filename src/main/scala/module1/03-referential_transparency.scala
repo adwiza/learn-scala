@@ -115,37 +115,37 @@ object opt {
   // Animal
   // Dog extend Animal
   // Option[Dog] Option[Animal] if "+" present
-  sealed trait Option[+A]{
-    def isEmpty: Boolean = this match {
-      case Option.Some(_) => false
-      case Option.None => true
-    }
-    def get: A = this match {
-      case Option.Some(v) => v
-      case Option.None => throw new Exception("Get on empty list")
-    }
-
-    def getOrElse[B >: A](b: B): B = this match {
-      case Option.Some(v) => v
-      case Option.None => b
-    }
-    def map[B](f: A => B): Option[B] = this match {
-      case Option.Some(v) => Option.Some(f(v))
-      case Option.None => Option.None
-    }
-    // val i: Option[Int] i.map(v => v + 1)
-
-    def findAbiturient(id: String): Option[Abiturient]
-
-    def f(x: Int, y: Int): Option[Int] =
-      if(y == 0) Option.None
-      else Option.Some(x / y)
-
-    def flatMap[B](f: A => Option[B]): Option[B]
-
-  }
-  object Option{
-    case class Some[A](v: A) extends Option[A]
-    case object None extends Option[Nothing]
-  }
+//  sealed trait Option[+A]{
+//    def isEmpty: Boolean = this match {
+//      case Option.Some(_) => false
+//      case Option.None => true
+//    }
+//    def get: A = this match {
+//      case Option.Some(v) => v
+//      case Option.None => throw new Exception("Get on empty list")
+//    }
+//
+//    def getOrElse[B >: A](b: B): B = this match {
+//      case Option.Some(v) => v
+//      case Option.None => b
+//    }
+//    def map[B](f: A => B): Option[B] = this match {
+//      case Option.Some(v) => Option.Some(f(v))
+//      case Option.None => Option.None
+//    }
+//    // val i: Option[Int] i.map(v => v + 1)
+//
+//    def findAbiturient(id: String): Option[Abiturient]
+//
+//    def f(x: Int, y: Int): Option[Int] =
+//      if(y == 0) Option.None
+//      else Option.Some(x / y)
+//
+//    def flatMap[B](f: A => Option[B]): Option[B]
+//
+//  }
+//  object Option{
+//    case class Some[A](v: A) extends Option[A]
+//    case object None extends Option[Nothing]
+//  }
 }
