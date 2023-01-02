@@ -154,7 +154,7 @@ object adt {
 
     a match {
       case Int => println("Int")
-      case String => println("String")
+//      case String => println("String")
       case _ => println("default")
     }
 
