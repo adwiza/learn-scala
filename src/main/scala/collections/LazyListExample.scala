@@ -35,7 +35,7 @@ object SetExample extends App {
   val ss: Set[Int] = HashSet(1, 2, 3)
 
   println(s.toList)
-  println(s.contains(1))
+  println(s.contains(1 ))
 
 
 }
