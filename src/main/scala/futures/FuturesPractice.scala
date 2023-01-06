@@ -43,14 +43,14 @@ object FuturesPractice extends App {
   val time = System.currentTimeMillis()
 
   val fut1 = Future.successful{
-    Thread.sleep(100)
+    Thread.sleep(1000)
     println("1")
     1
   }
   println(s"first: " + (System.currentTimeMillis() - time))
 
   val fut2 = Future.successful {
-    Thread.sleep(200)
+    Thread.sleep(2000)
     println("2")
     2
   }
