@@ -79,7 +79,7 @@ object high_kinded_types extends App {
   }
 
   object JsonWriter {
-    def apply[T](implicit jsonWriter: JsonWriter[T: JsonWriter[T] = jsonWriter
+    def apply[T](implicit jsonWriter: JsonWriter[T]): JsonWriter[T] = jsonWriter
 
     implicit val str: JsonWriter[String] = new JsonWriter[String] {
       def write(v: String): JsValue = JsString(v)
