@@ -1,5 +1,7 @@
 package module2
 
+import scala.language.implicitConversions
+
 object implcits extends App {
 
   // implicits conversions

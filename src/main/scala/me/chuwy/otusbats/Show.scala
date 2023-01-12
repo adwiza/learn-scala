@@ -1,6 +1,9 @@
 package me.chuwy.otusbats
 
-import cats.data.{NonEmptyList, Validated, State}
+import cats.Order
+import cats.data.{NonEmptyList, State, Validated}
+import cats.implicits._
+
 trait Show[A] {
   def show(a: A): String
 }
@@ -36,8 +39,18 @@ object Show {
 
   val (updated, candy) = tripleCandy.run(initial).value
 
-  val isThereACandy: State[VendingMachine, Boolean] =
+  val isThereACandy: State[VendingMachine, Boolean] = {
     tripleCandy.map(_.isDefined )
+  }
 
+  case class Point(x: Int, y: Int)
 
+//  implicit val orderPoint = deriveOrder[Point]
+  implicit val pointOrder: Order[Point] =
+
+    Order.by[Point, (Int, Int)] { point =>
+      val x = point.x
+      val y = point.y
+      (x, y)
+    }
 }
