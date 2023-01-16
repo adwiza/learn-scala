@@ -1,23 +1,24 @@
 package module3
 
+import module1.adt.case_classes.name
 import module1.type_system.v
 
 import scala.io.StdIn
 
 object funceffect extends App{
-  val greet = {
-    println("Как тебя зовут?")
-    val name = StdIn.readLine()
-    println(s"Привет $name")
-  }
+//  val greet = {
+//    println("Как тебя зовут?")
+//    val name = StdIn.readLine()
+//    println(s"Привет $name")
+//  }
 
 
-  val askForAge = {
-    println("How old are you?")
-    val age = StdIn.readInt()
-    if (age > 18) println("Access allowed")
-    else (println("Access denied"))
-  }
+//  val askForAge = {
+//    println("How old are you?")
+//    val age = StdIn.readInt()
+//    if (age > 18) println("Access allowed")
+//    else (println("Access denied"))
+//  }
 
 
   object declarativeEncoding {
@@ -64,8 +65,61 @@ object funceffect extends App{
 
     import consoleOps._
 
-//    val p2 =
+    val p2: Console[Unit] = for {
+      _ <- Console.printLine("What is your name?")
+      name <- Console.readLine
+      _ <- Console.printLine(s"Hello $name")
+    } yield ()
 
+    val p3: Console[Unit] = for {
+      _ <- Console.printLine("How old are you?")
+      age <- Console.readLine
+      _ <- if (age.toInt >= 18) Console.printLine(s" Access allowed")
+      else Console.printLine("Access denied")
+    } yield ()
+
+    def interpret[A](console: Console[A]): A = console match {
+      case Println(str, rest) =>
+        println(str)
+        interpret(rest)
+      case ReadLine(f) =>
+        interpret(f(StdIn.readLine()))
+      case Return(v) => v()
+    }
+
+    def describe[A](console: Console[A]): Unit = ???
+
+    val p4 = for {
+      _ <- p2
+      _ <- p3
+    } yield ()
+  }
+
+  object executableEncoding {
+
+    case class Console[A](unsafeRun: () => A, describe: () => ()) { self =>
+      def map[B](f: A => B): Console[B] = {
+        flatMap(f.andThen(b => Console.console(b)))
+      }
+      def flatMap[B](f: A => Console[B]): Console[B] =
+        Console.console(f(self.unsafeRun()).unsafeRun())
+
+      def cond[B](predicate: A => Boolean)(success: Console[B])(faulure: Console[B]) = ???
+
+    }
+
+    object Console{
+      def console[A](a: => A): Console[A] = Console(() => a)
+      def printLine(str: String): Console[Unit] = Console(() => println(str))
+      def readLine(): Console[String] = Console(() => StdIn.readLine())
+
+    }
+
+    lazy val p: Console[Unit] = for {
+      _ <- Console.printLine("What is your name?")
+      name <- Console.readLine
+      _ <- Console.printLine(s"Hello $name")
+    } yield ()
   }
 
 }
