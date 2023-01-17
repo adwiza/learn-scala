@@ -112,7 +112,6 @@ object funceffect extends App{
       def console[A](a: => A): Console[A] = Console(() => a)
       def printLine(str: String): Console[Unit] = Console(() => println(str))
       def readLine(): Console[String] = Console(() => StdIn.readLine())
-
     }
 
     lazy val p: Console[Unit] = for {
