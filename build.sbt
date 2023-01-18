@@ -17,9 +17,9 @@ libraryDependencies ++= Seq(
   "org.scalatest" %% "scalatest" % "3.2.14",
   "org.scalacheck" %% "scalacheck" % "1.17.0",
   "org.typelevel" %% "cats-effect" % "3.4.4" withSources() withJavadoc(),
-  "dev.zio" %% "zio" % "1.0.17",
-  "dev.zio" %% "zio-streams" % "1.0.17",
-  "dev.zio" %% "zio-test"    % "1.0.17"
+  "dev.zio" %% "zio" % "2.0.6",
+  "dev.zio" %% "zio-streams" % "2.0.6",
+  "dev.zio" %% "zio-test"    % "2.0.6"
 
 )
 

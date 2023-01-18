@@ -2,6 +2,8 @@ package module1
 
 //import module3.funceffect.{declarativeEncoding, executableEncoding}
 import module3.toyModel.zioRecursion
+import module3.toyModel.zioRecursion.readIntOrRetry
+import zio.Exit.unit.getOrThrowFiberFailure
 
 import scala.language.{existentials, postfixOps}
 object App {
@@ -9,7 +11,9 @@ object App {
   def main(args: Array[String]): Unit = {
 //    declarativeEncoding.interpret(declarativeEncoding.p4)
 //    executableEncoding.p.unsafeRun()
-    zio.Runtime.default.unsafeRun(zioRecursion.readIntOrRetry)
+    zio.Runtime.default.unsafe { implicit unsafe => runtime.unsafe.run(zioRecursion.readIntOrRetry)}
+    .getOrThrowFiberFailure()
+
   }
 //    def sumItUp: Int = {
 //      def one(x: Int): Int = {
