@@ -95,30 +95,30 @@ object funceffect extends App{
     } yield ()
   }
 
-  object executableEncoding {
+//  object executableEncoding {
 
-    case class Console[A](unsafeRun: () => A, describe: () => ()) { self =>
-      def map[B](f: A => B): Console[B] = {
-        flatMap(f.andThen(b => Console.console(b)))
-      }
-      def flatMap[B](f: A => Console[B]): Console[B] =
-        Console.console(f(self.unsafeRun()).unsafeRun())
+//    case class Console[A](unsafeRun: () => A, describe: () => ()) { self =>
+//      def map[B](f: A => B): Console[B] = {
+//        flatMap(f.andThen(b => Console.console(b)))
+//      }
+//      def flatMap[B](f: A => Console[B]): Console[B] =
+//        Console.console(f(self.unsafeRun()).unsafeRun())
+//
+//      def cond[B](predicate: A => Boolean)(success: Console[B])(faulure: Console[B]) = ???
 
-      def cond[B](predicate: A => Boolean)(success: Console[B])(faulure: Console[B]) = ???
+//    }
 
-    }
-
-    object Console{
-      def console[A](a: => A): Console[A] = Console(() => a)
-      def printLine(str: String): Console[Unit] = Console(() => println(str))
-      def readLine(): Console[String] = Console(() => StdIn.readLine())
-    }
-
-    lazy val p: Console[Unit] = for {
-      _ <- Console.printLine("What is your name?")
-      name <- Console.readLine
-      _ <- Console.printLine(s"Hello $name")
-    } yield ()
-  }
+//    object Console{
+//      def console[A](a: => A): Console[A] = Console(() => a)
+//      def printLine(str: String): Console[Unit] = Console(() => println(str))
+//      def readLine(): Console[String] = Console(() => StdIn.readLine())
+//    }
+//
+//    lazy val p: Console[Unit] = for {
+//      _ <- Console.printLine("What is your name?")
+//      name <- Console.readLine
+//      _ <- Console.printLine(s"Hello $name")
+//    } yield ()
+//  }
 
 }

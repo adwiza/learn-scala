@@ -1,6 +1,9 @@
 package module3
 
-import zio.{IO, RIO, Task, UIO, URIO, ZIO}
+//import zio.{Clock, IO, RIO, Task, UIO, URIO, ZIO}
+import zio._
+import zio.clock.Clock
+import zio.console._
 
 import scala.concurrent.Future
 import scala.io.StdIn
@@ -15,34 +18,34 @@ object toyModel {
    * Используя executable encoding реализуем свой zio
    *
    */
-  case class ZIO[-R, +E, +A](run: R => Either[E, A]){ self =>
-    def map[B](f: A => B): ZIO[R, E, B] = ZIO(r => self.run(r).map(f))
-    def flatMap[R1 <: R, E1 >: E, B](f: A => ZIO[R1, E1, B]): ZIO[R1, E1, B] =
-      ZIO(r => self.run(r).fold(zio.ZIO.fail, f).run(r))
-  }
+//  case class ZIO[-R, +E, +A](run: R => Either[E, A]){ self =>
+//    def map[B](f: A => B): ZIO[R, E, B] = ZIO(r => self.run(r).map(f))
+//    def flatMap[R1 <: R, E1 >: E, B](f: A => ZIO[R1, E1, B]): ZIO[R1, E1, B] =
+//      ZIO(r => self.run(r).fold(zio.ZIO.fail, f).run(r))
+//  }
 
   /**
    * Реализуем конструкторы под названием effect и fail
    */
 
-  object ZIO {
-    def effect[A](value: => A): ZIO[Any, Throwable, A] = {
-      try {
-        ZIO(_ => Right(value))
-      } catch {
-        case e => ZIO(_ => Left(e))
-      }
-
-      def fail[E](e: E): ZIO[Any, E, Nothing] = ZIO(_ => Left(e))
-    }
-
-    val echo: ZIO[Any, Throwable, Unit] = for {
-      str <- ZIO.effect(StdIn.readLine())
-      _ <- ZIO.effect(println(str))
-    } yield ()
-
-    echo.run()
-  }
+//  object ZIO {
+//    def effect[A](value: => A): ZIO[Any, Throwable, A] = {
+//      try {
+//        ZIO(_ => Right(value))
+//      } catch {
+//        case e => ZIO(_ => Left(e))
+//      }
+//
+//      def fail[E](e: E): ZIO[Any, E, Nothing] = ZIO(_ => Left(e))
+//    }
+//
+//    val echo: ZIO[Any, Throwable, Unit] = for {
+//      str <- ZIO.effect(StdIn.readLine())
+//      _ <- ZIO.effect(println(str))
+//    } yield ()
+//
+//    echo.run()
+//  }
 
   object zioTypeAliases {
     type Error
@@ -66,15 +69,15 @@ object toyModel {
     val _: Task[Unit] = ZIO.effect(println("Hello"))
 
     // любой не падающий эффект
-    val _: UIO[Unit] = zio.ZIO.effectTotal(println("hello"))
+    val _: UIO[Unit] = ZIO.effectTotal(println("hello"))
 
     // From Future
     val f: Future[Int] = ???
-    val _: Task[Int] = zio.ZIO.fromFuture(ec => f)
+    val _: Task[Int] = ZIO.fromFuture(ec => f)
 
     // From try
     val t: Try[String] = ???
-    val _: Task[String] = zio.ZIO.fromTry(t)
+    val _: Task[String] = ZIO.fromTry(t)
 
     // From either
     val e: Either[String, Int] = ???
@@ -87,7 +90,7 @@ object toyModel {
     val _: ZIO[Any, Option[Nothing], Int] = zz.some
 
     // From function
-    val _: URIO[Int, Int] = zio.ZIO.fromFunction[String, Unit](str => println(str))
+    val _: URIO[Int, Int] = ZIO.fromFunction[String, Unit](str => println(str))
 
     // Особые версии конструкторов
     val _: UIO[Unit] = zio.ZIO.unit
@@ -97,9 +100,53 @@ object toyModel {
     val _: zio.ZIO[Any, Int, Nothing] = zio.ZIO.fail((7))
 
     lazy val readLine: Task[String] = zio.ZIO.effect(StdIn.readLine())
-//    lazy val lineToInr: zio.ZIO[Any, Throwable, Int] =
-//    lazy val lineToInr: zio.ZIO[Any, Throwable, Int] =
+    lazy val lineToInt: zio.ZIO[Any, Throwable, Int] = readLine.flatMap(str => zio.ZIO.effect(str.toInt))
 
+    val a1: Task[Int] = ???
+    val b1: Task[String] = ???
+
+    val _: zio.ZIO[Any, Throwable, Int] = zio.ZIO.effect(println("Hello")) *> zio.ZIO.effect(1 + 1)
+
+    lazy val _: zio.ZIO[Any, Throwable, (Int, String)] = a1.zip(b1)
+
+    // zipRight
+    lazy val _: zio.ZIO[Any, Throwable, String] = a1 zipRight b1  // a1 *> b1
+
+    //zip Left
+    lazy val _: zio.ZIO[Any, Throwable, Unit] = a1 zipLeft b1 // a1 <* b1
+
+    val r1: zio.ZIO[Any, Throwable, Int] = for {
+      n1 <- lineToInt
+      n2 <- lineToInt
+    } yield n1 + n2
+
+    lazy val ab4: zio.ZIO[Any, Throwable, String] = b1.zipWith(b1)(_ + _) // zipWith
+
+    lazy val c: ZIO[Clock, Throwable, Int] = zio.ZIO.effect("").as(7)
+
+  }
+
+  object zioRecursion {
+
+    /**
+     * Read int from console and retry if mistake
+     */
+
+    lazy val readInt: ZIO[Console, Throwable, Int] =
+      ZIO.effect(StdIn.readLine()).flatMap(str => ZIO.effect(str.toInt))
+
+
+    lazy val readIntOrRetry: ZIO[Console, Throwable, Int] = readInt.orElse(
+      ZIO.effect(println("Error, repeat please")) *> readIntOrRetry
+    )
+
+    def factorial(n: Int): Int =
+      if (n <= 1 ) n
+      else n * factorial(n - 1)
+    def factorialZ(n: BigDecimal): Task[BigDecimal] = {
+          if (n <= 1 ) ZIO.succeed(n)
+          else ZIO.succeed(n).zipWith(factorialZ(n - 1))(_ * _)
+    }
 
   }
 
