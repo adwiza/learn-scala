@@ -1,13 +1,15 @@
 package module1
 
-import module3.funceffect.{declarativeEncoding, executableEncoding}
+//import module3.funceffect.{declarativeEncoding, executableEncoding}
+import module3.toyModel.zioRecursion
 
 import scala.language.{existentials, postfixOps}
 object App {
 
   def main(args: Array[String]): Unit = {
 //    declarativeEncoding.interpret(declarativeEncoding.p4)
-    executableEncoding.p.unsafeRun()
+//    executableEncoding.p.unsafeRun()
+    zio.Runtime.default.unsafeRun(zioRecursion.readIntOrRetry)
   }
 //    def sumItUp: Int = {
 //      def one(x: Int): Int = {
