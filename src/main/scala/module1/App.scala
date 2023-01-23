@@ -20,9 +20,9 @@ object App {
 
     val app = z1.zipPar(z2).tapErrorCause {
       case Both(left, right) =>
-//        printLine(left.failureOption.toString) *> printLine(right.failureOption.toString)
+        printLine(left.failureOption.toString) *> printLine(right.failureOption.toString)
 //        printLine(left.prettyPrint) *> printLine(right.prettyPrint)
-        printLine(left.toString) *> printLine(right.toString)
+//        printLine(left.toString) *> printLine(right.toString)
     }.orElse(printLine("app is failed"))
 
     Unsafe.unsafe { implicit unsafe => Runtime.default.unsafe.run(app).getOrThrowFiberFailure() }
