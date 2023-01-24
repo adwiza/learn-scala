@@ -19,7 +19,8 @@ libraryDependencies ++= Seq(
   "org.typelevel" %% "cats-effect" % "3.4.4" withSources() withJavadoc(),
   "dev.zio" %% "zio" % "2.0.6",
   "dev.zio" %% "zio-streams" % "2.0.6",
-  "dev.zio" %% "zio-test"    % "2.0.6"
+  "dev.zio" %% "zio-test"    % "2.0.6",
+  "dev.zio" %% "zio-managed" % "2.0.6"
 
 )
 
