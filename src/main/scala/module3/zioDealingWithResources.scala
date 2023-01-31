@@ -137,24 +137,24 @@ object zioZManaged {
 
 //  def e2: ZIO[MyEnv, Nothing, Unit]
 
-//  trait DBService{
-//    def tx[T](query: Query[T]): IO[DBError, QueryResult[T]]
-//  }
-//  trait EmailService{
-//    def makeEmail(email: String, body: String): Task[Email]
-//    def sendEmail(email: Email): Task[Unit]
-//  }
-//
-//  trait LoggingService{
-//    def log(str: String): Task[Unit]
-//  }
-//
-//  val dbService: DBService = ???
-//  val emailService: EmailService = ???
-//
-//  val combined: DBService with EmailService = ???
-//
-//  type MyEnv
+  trait DBService{
+    def tx[T](query: Query[T]): IO[DBError, QueryResult[T]]
+  }
+  trait EmailService{
+    def makeEmail(email: String, body: String): Task[Email]
+    def sendEmail(email: Email): Task[Unit]
+  }
+
+  trait LoggingService{
+    def log(str: String): Task[Unit]
+  }
+
+  val dbService: DBService = ???
+  val emailService: EmailService = ???
+
+  val combined: DBService with EmailService = ???
+
+  type MyEnv
   import zio.Console.printLine
 
   def e1: ZIO[Clock with Console, Nothing, Nothing] = for {
