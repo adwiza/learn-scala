@@ -1,14 +1,26 @@
 package module3
 
+import breeze.storage.ConfigurableDefault.fromV
+import jdk.internal.net.http.common.Utils
+import module3.toyModel2.User
 import module3.tryFinally.traditional.{Resource, acquareResource}
-import module3.zipBracket.File
+import module3.zipBracket.{File, openFile}
+import org.apache.hadoop.shaded.org.apache.commons.configuration2.tree.QueryResult
+import org.scalatest.prop.Configuration
+import sun.security.provider.NativePRNG.Blocking
 import zio.Console.printLine
-import zio.{Console, IO, RIO, UIO, URIO, ZIO}
-import zio.ZIO.{Release, acquireReleaseWith}
+import zio.Random.nextIntBetween
+import zio.Scope.global
+import zio.{Clock, Config, Console, IO, RIO, Random, Scope, Task, UIO, URIO, ZIO, ZLayer}
+import zio.ZIO.{Release, acquireReleaseWith, blockingExecutor, fromAutoCloseable}
 import zio.managed.ZManaged
 
-import java.io.{Closeable, IOException}
+import java.io._
+import java.lang.Thread.sleep
+import javax.management.Query
+import javax.validation.constraints.Email
 import scala.concurrent.Future
+import scala.sys.process.BasicIO
 import scala.util.{Failure, Success}
 
 object tryFinally {
@@ -101,9 +113,70 @@ object tryFinally {
 }
 
 object zioZManaged {
-  import zio.managed._
+  //  lazy val files: ZManaged[Any, IOException, List[File]] =
+  //    ZManaged.foreachPar(fileNames)(file)
 
-  val file1: ZManaged[Any, IOException, File] = ???
+  //  val live: ZLayer[Configuration with Blocking, Throwable, DBTransactor] = ZLayer.fromManaged(
+  //    (for {
+  //      config <- zio.config.getConfig[Config].toManaged_
+  //      executor <- blockingExecutor.toManaged_
+  //      transactor <- DBTransactor.mkTransactor(config.db, executor.asEC, executor.asEC)
+  //    } yield transactor)
+  //  )
+  trait ZIO[-R, +E, +A] {
+    def provide(r: R): IO[E, A]
+  }
 
-  val file2: ZManaged[Any, IOException, File] = ???
+  object ZIO {
+    def environment[R]: ZIO[R, Nothing, R] = ???
+  }
+
+  type MyEnv = Clock with Console with RandomAccessFile
+
+//  def e1: ZIO[Clock with Console with Random, Nothing, Unit]
+
+//  def e2: ZIO[MyEnv, Nothing, Unit]
+
+//  trait DBService{
+//    def tx[T](query: Query[T]): IO[DBError, QueryResult[T]]
+//  }
+//  trait EmailService{
+//    def makeEmail(email: String, body: String): Task[Email]
+//    def sendEmail(email: Email): Task[Unit]
+//  }
+//
+//  trait LoggingService{
+//    def log(str: String): Task[Unit]
+//  }
+//
+//  val dbService: DBService = ???
+//  val emailService: EmailService = ???
+//
+//  val combined: DBService with EmailService = ???
+//
+//  type MyEnv
+  import zio.Console.printLine
+
+  def e1: ZIO[Clock with Console, Nothing, Nothing] = for {
+  console <- ZIO.environment[Console].map(_.get)
+  clock <- ZIO.environment[Clock].map(_.get)
+  random <- ZIO.environment[Random].map(_.get)
+  _ <- printLine("Hello")
+  _ <- sleep(5)
+  int <- nextIntBetween(1, 10)
+  _ <- printLine(int.toString)
+  } yield ()
+
+  val queryAndNotify = for {
+    dbService <- ZIO.environment[DBService]
+    emailService <- ZIO.environment[EmailService]
+    email <- emailService.makeEmail("", "")
+    query: Query[User] = ???
+    result <- dbService.sendEmail(email)
+  } yield ???
+
+  lazy val services: DBService with EmailService = ???
+
+  lazy val e3: IO[Any, Nothing] =  queryAndNotify.provide(services)
 }
+
